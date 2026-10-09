@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hoops &amp; Wheels – Grade 2 Maths (Cambridge)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Bungee&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  /* LIGHT = basketball court */
+  --bg:#F2C78A; --plank:rgba(120,70,20,.14); --panel:#FFF9EE; --ink:#1A1D33; --muted:#59607F;
+  --line:#1A1D33; --accent:#E8590C; --btn:#FFC20E; --btn-ink:#1A1D33;
+  --good:#12A150; --good-bg:#DCF7E6; --bad:#D92D20; --bad-bg:#FFE4E1; --sky:#E5EEFF;
+  --road:#2B2F3A; --clock:#FFFFFF; --flag:#1A1D33;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    /* DARK = night race */
+    --bg:#0E1118; --plank:rgba(255,255,255,.045); --panel:#1B2130; --ink:#F3F5FA; --muted:#A5AEC8;
+    --line:#46527A; --accent:#FF7A1A; --btn:#FFD21F; --btn-ink:#14161C;
+    --good:#2BD67B; --good-bg:#12372A; --bad:#FF5A4D; --bad-bg:#40201F; --sky:#232C4A;
+    --road:#262B38; --clock:#10131B; --flag:#F3F5FA;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1118; --plank:rgba(255,255,255,.045); --panel:#1B2130; --ink:#F3F5FA; --muted:#A5AEC8;
+  --line:#46527A; --accent:#FF7A1A; --btn:#FFD21F; --btn-ink:#14161C;
+  --good:#2BD67B; --good-bg:#12372A; --bad:#FF5A4D; --bad-bg:#40201F; --sky:#232C4A;
+  --road:#262B38; --clock:#10131B; --flag:#F3F5FA;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100vh;background-color:var(--bg);color:var(--ink);
+  background-image:repeating-linear-gradient(90deg,transparent 0 78px,var(--plank) 78px 80px);
+  font-family:"Baloo 2","Trebuchet MS","Arial Rounded MT Bold",system-ui,sans-serif;font-size:20px;line-height:1.35;font-weight:600;
+}
+.flagstrip{height:28px;background:repeating-conic-gradient(var(--flag) 0 25%,transparent 0 50%) 0 0/28px 28px}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 56px}
+.disp{font-family:"Bungee","Impact","Arial Black",sans-serif;font-weight:400;letter-spacing:.5px}
+.hidden{display:none!important}
+button{font-family:inherit}
+button:focus-visible,input:focus-visible,label:focus-within{outline:4px solid #3B82F6;outline-offset:2px}
+
+/* HUD */
+.hud{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.brand{flex:1;font-size:20px;min-width:150px}
+.brand span{color:var(--accent)}
+.led{background:#0B0D12;color:#FFD21F;border-radius:10px;padding:2px 12px;border:3px solid var(--ink);font-size:15px;min-width:74px;text-align:center}
+.led small{display:block;font:600 11px "Baloo 2",sans-serif;color:#aab;letter-spacing:.08em;margin-top:-4px}
+.ib{width:42px;height:42px;border-radius:50%;border:3px solid var(--ink);background:var(--panel);font-size:18px;cursor:pointer;color:var(--ink)}
+
+/* track */
+.track{position:relative;height:58px;border-radius:14px;background:var(--road);border:3px solid var(--ink);overflow:hidden;margin-bottom:12px}
+.track::before{content:"";position:absolute;left:0;right:0;top:50%;height:4px;background:repeating-linear-gradient(90deg,#fff 0 18px,transparent 18px 36px);opacity:.55;transform:translateY(-50%)}
+.track .fin{position:absolute;right:4px;top:6px;font-size:34px}
+.car{position:absolute;top:8px;left:0;font-size:36px;transform:scaleX(-1);transition:left .9s cubic-bezier(.3,1.3,.5,1);line-height:1.1;will-change:left}
+.car.boost{animation:boost .7s}
+.car.slip{animation:slip .6s}
+@keyframes boost{0%{transform:scaleX(-1) translateY(0)}30%{transform:scaleX(-1) translateY(-10px) rotate(-6deg)}100%{transform:scaleX(-1)}}
+@keyframes slip{0%,100%{transform:scaleX(-1)}25%{transform:scaleX(-1) translateY(3px) rotate(10deg)}50%{transform:scaleX(-1) translateY(-3px) rotate(-10deg)}75%{transform:scaleX(-1) rotate(6deg)}}
+
+/* cards */
+.card{background:var(--panel);border:4px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 8px 0 var(--line)}
+.btn{font-family:"Bungee","Impact",sans-serif;font-size:19px;color:var(--btn-ink);background:var(--btn);border:4px solid var(--ink);border-radius:16px;padding:10px 24px;cursor:pointer;box-shadow:0 6px 0 var(--ink);transition:transform .08s,box-shadow .08s;letter-spacing:.5px}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:active:not(:disabled){transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:var(--panel);color:var(--ink)}
+
+/* start */
+.hero{text-align:center;padding-top:10px}
+.hero h1{font-size:clamp(34px,10vw,64px);line-height:1;margin:8px 0 4px;text-shadow:3px 3px 0 var(--accent)}
+.hero p{margin:4px 0;color:var(--muted)}
+.scene{position:relative;height:96px;margin:14px -4px 6px;border-radius:14px;background:var(--road);border:3px solid var(--ink);overflow:hidden}
+.scene::before{content:"";position:absolute;left:0;right:0;bottom:22px;height:4px;background:repeating-linear-gradient(90deg,#fff 0 22px,transparent 22px 44px);opacity:.5}
+.scene .c{position:absolute;bottom:20px;left:-80px;font-size:52px;transform:scaleX(-1);animation:drive 4.2s linear infinite}
+.scene .b{position:absolute;top:0;right:12%;font-size:44px;animation:dribble 1s cubic-bezier(.3,.6,.5,1) infinite}
+.scene .h{position:absolute;top:8px;left:8%;font-size:34px}
+@keyframes drive{from{left:-80px}to{left:calc(100% + 20px)}}
+@keyframes dribble{0%,100%{transform:translateY(0)}50%{transform:translateY(40px)}}
+.topics{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+.tag{background:var(--sky);border:3px solid var(--line);border-radius:999px;padding:0 12px;font-size:15px}
+.mixrow{margin:16px 0 4px;font-size:17px;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+.mixrow input{width:24px;height:24px;accent-color:var(--accent)}
+
+/* start lights */
+.lights{position:fixed;inset:0;z-index:60;background:rgba(8,10,16,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.lamps{display:flex;gap:18px;background:#0B0D12;border:5px solid #FFD21F;border-radius:26px;padding:20px 26px}
+.lamp{width:62px;height:62px;border-radius:50%;background:#2A2E3A;border:4px solid #000;transition:background .1s,box-shadow .1s}
+.lamp.red{background:#FF2D2D;box-shadow:0 0 28px #FF2D2D}
+.lamp.green{background:#2BFF7A;box-shadow:0 0 34px #2BFF7A}
+#goTxt{font-family:"Bungee",Impact,sans-serif;font-size:52px;color:#FFD21F}
+
+/* quiz */
+.meta{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;font-size:16px}
+.topic{background:var(--btn);color:var(--btn-ink);border:3px solid var(--ink);border-radius:10px;padding:0 10px}
+.count{margin-left:auto}
+.listen{border:3px solid var(--ink);background:var(--sky);color:var(--ink);border-radius:12px;padding:0 10px;font-size:16px;cursor:pointer;font-weight:700}
+.qrow{display:flex;gap:12px;align-items:center}
+.mascot{font-size:46px;line-height:1;flex:none}
+.mascot.hop{animation:hop .7s}
+.mascot.squish{animation:squish .6s}
+@keyframes hop{0%{transform:translateY(0)}35%{transform:translateY(-24px) rotate(180deg)}70%{transform:translateY(0) rotate(360deg) scale(1.15,.85)}100%{transform:none}}
+@keyframes squish{0%,100%{transform:none}30%{transform:scale(1.3,.7)}60%{transform:scale(.8,1.2)}}
+.q{margin:0;font-size:clamp(21px,5vw,28px);line-height:1.2;font-weight:700}
+.qwrap{animation:slide .35s ease-out}
+@keyframes slide{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
+.vis{display:flex;justify-content:center;margin:14px 0 0;padding:10px;background:var(--sky);border:3px dashed var(--line);border-radius:16px}
+.vis:empty{display:none}
+.vsvg{width:100%;max-width:380px;height:auto;display:block}
+.bigemoji{font-size:84px;line-height:1.1}
+.lcd{font-family:"Bungee",Impact,monospace;font-size:64px;color:#FFD21F;background:#0B0D12;border:5px solid var(--ink);border-radius:16px;padding:4px 26px;letter-spacing:4px;text-shadow:0 0 14px #FF7A1A}
+.blocks{display:flex;gap:28px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.blocks .grp{display:flex;flex-direction:column;align-items:center;gap:6px}
+.blocks .row{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;justify-content:center;max-width:300px}
+.rod{display:flex;flex-direction:column;width:18px;border:2.5px solid var(--ink);background:#3B82F6;border-radius:3px;overflow:hidden}
+.rod i{display:block;height:9px;border-bottom:1.5px solid rgba(255,255,255,.7)}
+.rod i:last-child{border:0}
+.one{width:18px;height:18px;border:2.5px solid var(--ink);background:#FF7A1A;border-radius:3px}
+.blocks small{font-size:15px;color:var(--muted)}
+
+.answers{display:grid;gap:12px;margin-top:18px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;font-size:22px;font-weight:700;color:var(--ink);background:var(--panel);border:4px solid var(--ink);border-radius:16px;padding:10px 14px;cursor:pointer;box-shadow:0 5px 0 var(--ink);transition:transform .08s,box-shadow .08s,background .15s}
+.opt:hover:not(:disabled){background:var(--sky);transform:translateY(-2px)}
+.opt:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.opt .k{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:400 17px "Bungee",Impact,sans-serif;color:#1A1D33;border:3px solid #1A1D33;background:#FF8A2B;background-image:linear-gradient(90deg,transparent 46%,#1A1D33 46% 54%,transparent 54%)}
+.opt .k span{background:#FF8A2B;border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:14px}
+.opt.right{background:var(--good-bg);border-color:var(--good);box-shadow:0 5px 0 var(--good);animation:pop .5s}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);box-shadow:0 5px 0 var(--bad);animation:shake .5s}
+.opt:disabled{cursor:default}
+@keyframes pop{40%{transform:scale(1.05)}}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.yn{grid-template-columns:1fr 1fr}
+.yn .opt{justify-content:center;font:400 30px "Bungee",Impact,sans-serif;padding:20px 8px}
+.yn .opt[data-v="Yes"]{border-color:var(--good);box-shadow:0 5px 0 var(--good)}
+.yn .opt[data-v="No"]{border-color:var(--bad);box-shadow:0 5px 0 var(--bad)}
+
+/* keypad */
+.pad{max-width:330px;margin:16px auto 0}
+.screen{font:400 46px "Bungee",Impact,monospace;text-align:right;color:#FFD21F;background:#0B0D12;border:4px solid var(--ink);border-radius:14px;padding:2px 16px;min-height:68px;margin-bottom:12px;text-shadow:0 0 12px #FF7A1A;letter-spacing:3px}
+.screen.right{color:#2BFF7A;text-shadow:0 0 12px #2BFF7A}
+.screen.wrong{color:#FF5A4D;text-shadow:0 0 12px #FF5A4D;animation:shake .5s}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.key{font:400 28px "Bungee",Impact,sans-serif;color:var(--ink);background:var(--panel);border:4px solid var(--ink);border-radius:14px;padding:8px 0;cursor:pointer;box-shadow:0 5px 0 var(--ink)}
+.key:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.key.go{background:var(--btn);color:var(--btn-ink)}
+.key:disabled{opacity:.45;cursor:default}
+
+/* feedback + hoop shot */
+.fb{margin-top:20px;border:4px solid var(--ink);border-radius:18px;padding:14px;display:flex;gap:14px;align-items:center;animation:rise .35s ease-out}
+.fb.good{background:var(--good-bg);border-color:var(--good)}
+.fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.shot{position:relative;flex:none;width:260px;height:150px}
+.shot .hb,.shot .net{position:absolute;left:152px;top:0;width:100px;height:100px}
+.shot .net{z-index:3}
+.shot .ball{position:absolute;left:10px;bottom:6px;font-size:32px;line-height:34px;width:34px;height:34px;z-index:2;animation:make 1s linear forwards}
+.shot.miss .ball{animation:miss 1.05s linear forwards}
+.shot.miss .hb{animation:rim .35s .72s}
+.callout{position:absolute;left:0;top:2px;font:400 24px "Bungee",Impact,sans-serif;color:var(--accent);text-shadow:2px 2px 0 var(--ink);opacity:0;animation:callout .6s .75s forwards;transform-origin:left center}
+.shot.miss .callout{color:var(--bad)}
+@keyframes callout{0%{opacity:0;transform:scale(.4) rotate(-8deg)}60%{opacity:1;transform:scale(1.25) rotate(-4deg)}100%{opacity:1;transform:scale(1) rotate(-4deg)}}
+@keyframes rim{0%,100%{transform:none}25%{transform:translateX(5px) rotate(2deg)}50%{transform:translateX(-4px) rotate(-2deg)}75%{transform:translateX(3px)}}
+@keyframes make{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(45px,-70px) rotate(180deg)}50%{transform:translate(100px,-108px) rotate(360deg)}70%{transform:translate(150px,-95px) rotate(520deg)}80%{transform:translate(173px,-75px) rotate(600deg)}92%{transform:translate(173px,-32px) rotate(640deg)}100%{transform:translate(173px,-6px) rotate(660deg)}}
+@keyframes miss{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(45px,-70px) rotate(180deg)}50%{transform:translate(100px,-108px) rotate(360deg)}68%{transform:translate(160px,-92px) rotate(500deg)}76%{transform:translate(172px,-90px) rotate(540deg)}88%{transform:translate(215px,-100px) rotate(640deg)}100%{transform:translate(246px,-2px) rotate(780deg)}}
+.fbtxt{flex:1;min-width:0}
+.fbtxt h3{margin:0;font:400 22px "Bungee",Impact,sans-serif}
+.fbtxt .ans{margin:4px 0;font-size:21px;font-weight:800}
+.fbtxt .why{margin:4px 0 10px;font-size:18px;font-weight:600}
+.fbtxt .why b{display:inline-block;background:var(--ink);color:var(--panel);border-radius:8px;padding:0 8px;margin-right:6px;font-size:14px;font-weight:700}
+@media (max-width:620px){
+  .fb{flex-direction:column;align-items:stretch}
+  .shot{align-self:center}
+  .card{padding:14px}
+}
+@media (max-width:420px){.shot{transform:scale(.88);transform-origin:center top;margin-bottom:-14px}}
+
+/* result */
+.trophy{font-size:92px;display:inline-block;animation:trophy 1.6s ease-in-out infinite}
+@keyframes trophy{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-14px) rotate(6deg)}}
+.stars{font-size:44px;letter-spacing:4px}
+.stars span{display:inline-block;animation:pop .6s both}
+.rank{font-size:clamp(26px,6vw,40px);margin:4px 0}
+.big{font-size:60px;line-height:1}
+.bars{display:grid;gap:8px;margin:16px 0;text-align:left}
+.bar{display:grid;grid-template-columns:140px 1fr 48px;gap:10px;align-items:center;font-size:16px}
+.bar .t{height:16px;border:3px solid var(--ink);border-radius:99px;overflow:hidden;background:var(--panel)}
+.bar .t i{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,var(--accent) 0 8px,var(--btn) 8px 16px);transition:width 1s ease-out}
+details{margin-top:16px;text-align:left}
+summary{cursor:pointer;font-weight:800}
+.rev{border-top:3px dashed var(--line);padding:8px 0;font-size:17px}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:70}
+@media (max-width:520px){.bar{grid-template-columns:100px 1fr 40px;font-size:14px}.led{min-width:62px}}
+@media (prefers-reduced-motion:reduce){
+  .scene .c,.scene .b,.trophy{animation:none}
+  .car{transition:none}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="flagstrip" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<div class="lights hidden" id="lights" role="status" aria-live="polite">
+  <div class="lamps"><div class="lamp"></div><div class="lamp"></div><div class="lamp"></div></div>
+  <div id="goTxt">READY…</div>
+</div>
+
+<div class="wrap">
+  <div class="hud">
+    <div class="brand disp">HOOPS <span>&amp;</span> WHEELS</div>
+    <div class="led disp" id="scoreLed">0<small>POINTS</small></div>
+    <div class="led disp" id="streakLed">0<small>STREAK</small></div>
+    <button class="ib" id="themeBtn" aria-label="Switch day or night mode" title="Day / night">🌓</button>
+    <button class="ib" id="muteBtn" aria-label="Sound on or off">🔊</button>
+  </div>
+
+  <!-- START -->
+  <section class="card hero" id="start">
+    <div class="disp" style="font-size:16px;color:var(--muted)">Grade 2 · Cambridge Primary Stage 2</div>
+    <h1 class="disp">HOOPS &amp; WHEELS</h1>
+    <p>Score baskets and win the race! 50 maths questions.</p>
+    <div class="scene" aria-hidden="true"><span class="h">🏁</span><span class="b">🏀</span><span class="c">🏎️</span></div>
+    <div class="topics">
+      <span class="tag">Numbers &amp; words</span><span class="tag">Tens &amp; ones</span><span class="tag">Hundreds</span>
+      <span class="tag">Add &amp; subtract</span><span class="tag">2D shapes</span><span class="tag">3D shapes</span>
+      <span class="tag">Length</span><span class="tag">Telling time</span>
+    </div>
+    <p>Right answer = 🏀 swish and your car speeds up. Wrong answer = a tip from Coach!</p>
+    <label class="mixrow"><input type="checkbox" id="mix"> Mix up the questions</label><br><br>
+    <button class="btn" id="startBtn">Start engine!</button>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="track" aria-hidden="true"><div class="fin">🏁</div><div class="car" id="car">🏎️</div></div>
+    <div class="card">
+      <div class="meta"><span class="topic" id="topic"></span><button class="listen" id="listen" aria-label="Read the question aloud">🔈 Listen</button><span class="count" id="counter"></span></div>
+      <div id="qwrap" class="qwrap">
+        <div class="qrow"><div class="mascot" id="mascot">🏀</div><p class="q" id="qtext"></p></div>
+        <div class="vis" id="vis"></div>
+        <div class="answers" id="answers"></div>
+      </div>
+      <div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="card hero hidden" id="result">
+    <div class="trophy" aria-hidden="true">🏆</div>
+    <div class="stars" id="stars"></div>
+    <div class="rank disp" id="rank"></div>
+    <div class="big disp" id="rScore"></div>
+    <p id="rMsg"></p>
+    <div class="bars" id="bars"></div>
+    <button class="btn" id="againBtn">Race again!</button>
+    <details id="review"><summary>Questions to practise again</summary><div id="revList"></div></details>
+  </section>
+</div>
+
+<script>
+/* ================= QUESTION BANK (50) =================
+ type: mc | yn | num   ·   v = optional picture   ·   e = Coach's tip (explanation)  */
+const Q = [
+/* ---- NUMBERS IN WORDS ---- */
+{t:"Numbers & words",type:"mc",q:"Which number is forty-seven?",o:["47","74","407","470"],a:"47",e:"Forty means 4 tens and seven means 7 ones. 4 tens and 7 ones is 47. (74 is seventy-four: 7 tens and 4 ones.)"},
+{t:"Numbers & words",type:"mc",q:"How do we write 63 in words?",o:["sixty-three","thirty-six","sixty-thirteen","six-three"],a:"sixty-three",e:"The 6 is in the tens place, so it is sixty. The 3 is in the ones place, so it is three. Together: sixty-three."},
+{t:"Numbers & words",type:"num",q:"Write the number: eighty-five",a:85,e:"Eighty is 8 tens = 80. Five is 5 ones. 80 + 5 = 85."},
+{t:"Numbers & words",type:"yn",q:"Is thirteen the same number as 30?",a:"No",e:"Thirteen is 13 (1 ten and 3 ones). Thirty is 30 (3 tens). The words sound alike, but they are different numbers."},
+/* ---- PLACE VALUE ---- */
+{t:"Tens & ones",type:"num",q:"Count the blocks. What number do they show?",v:{k:"blocks",tens:3,ones:4},a:34,e:"Each long rod is 1 ten. 3 tens = 30. Each small cube is 1 one. 4 ones = 4. So 30 + 4 = 34."},
+{t:"Tens & ones",type:"num",q:"Count the blocks. What number do they show?",v:{k:"blocks",tens:7,ones:2},a:72,e:"7 rods = 7 tens = 70. 2 cubes = 2 ones. 70 + 2 = 72."},
+{t:"Tens & ones",type:"mc",q:"In the number 58, what is the value of the digit 5?",o:["5","15","50","500"],a:"50",e:"The 5 is in the tens place. It means 5 tens, which is 50. (The 8 is in the ones place, so it is just 8.)"},
+{t:"Tens & ones",type:"num",q:"How many ones are in the number 46?",a:6,e:"46 is 4 tens and 6 ones. The digit on the right is the ones digit, so there are 6 ones."},
+{t:"Tens & ones",type:"yn",q:"Is 20 + 6 the same as 26?",a:"Yes",e:"20 is 2 tens and 6 is 6 ones. Put them together and you get 2 tens and 6 ones, which is 26."},
+{t:"Tens & ones",type:"mc",q:"Which number has 8 tens and 2 ones?",o:["28","82","802","820"],a:"82",e:"Write the tens digit first, then the ones digit. 8 tens and 2 ones is 82."},
+{t:"Tens & ones",type:"yn",q:"Does the number 73 have 7 tens?",a:"Yes",e:"In 73, the 7 is in the tens place. That means 7 tens (70), plus 3 ones."},
+/* ---- COMPARE / COUNT ---- */
+{t:"Compare & count",type:"mc",q:"Which is the biggest number?",o:["38","83","29","92"],a:"92",e:"Look at the tens first. 92 has 9 tens, which is more than 3, 8 or 2 tens. So 92 is the biggest."},
+{t:"Compare & count",type:"mc",q:"Which is the smallest number?",o:["45","54","15","51"],a:"15",e:"Look at the tens. 15 has only 1 ten, while the others have 4 or 5 tens. So 15 is the smallest."},
+{t:"Compare & count",type:"num",q:"What number comes just before 70?",a:69,e:"Counting back one from 70 gives 69. Count: 67, 68, 69, 70."},
+{t:"Compare & count",type:"num",q:"Count in 5s: 5, 10, 15, __ . What comes next?",a:20,e:"Each number is 5 more than the one before. 15 + 5 = 20."},
+{t:"Compare & count",type:"yn",q:"Is 36 an even number?",a:"Yes",e:"Even numbers end in 0, 2, 4, 6 or 8. 36 ends in 6, so it is even. You can share 36 into 2 equal groups of 18."},
+/* ---- HUNDREDS ---- */
+{t:"Hundreds",type:"mc",q:"What number is 2 hundreds, 4 tens and 5 ones?",o:["245","425","254","2045"],a:"245",e:"Write the hundreds digit, then the tens digit, then the ones digit: 2, 4, 5. The number is 245."},
+{t:"Hundreds",type:"num",q:"In the number 482, what is the value of the digit 8?",a:80,e:"The 8 is in the middle, the tens place. It is worth 8 tens = 80."},
+{t:"Hundreds",type:"yn",q:"Is 10 tens the same as 100?",a:"Yes",e:"10 tens means 10 groups of ten. 10, 20, 30 … 100. So 10 tens is 1 hundred."},
+/* ---- ADD & SUBTRACT ---- */
+{t:"Add & subtract",type:"num",q:"8 + 7 = ?",a:15,e:"Make a ten first. 8 + 2 = 10, and 7 is 2 + 5. So 10 + 5 = 15."},
+{t:"Add & subtract",type:"num",q:"24 + 13 = ?",a:37,e:"Add the tens: 20 + 10 = 30. Add the ones: 4 + 3 = 7. Then 30 + 7 = 37."},
+{t:"Add & subtract",type:"num",q:"38 + 6 = ?",a:44,e:"Jump to the next ten. 38 + 2 = 40. You still have 4 more to add (6 − 2 = 4). So 40 + 4 = 44."},
+{t:"Add & subtract",type:"num",q:"17 − 9 = ?",a:8,e:"Take away 10 first: 17 − 10 = 7. But you only needed to take away 9, so add 1 back. 7 + 1 = 8."},
+{t:"Add & subtract",type:"num",q:"76 − 14 = ?",a:62,e:"Take away the tens: 76 − 10 = 66. Take away the ones: 66 − 4 = 62."},
+{t:"Add & subtract",type:"yn",q:"Is 15 − 6 equal to 8?",a:"No",e:"15 − 5 = 10, and one more taken away makes 9. So 15 − 6 = 9, not 8."},
+{t:"Add & subtract",type:"num",q:"Find the missing number: 7 + ☐ = 15",a:8,e:"Count up from 7 to 15, or use take away: 15 − 7 = 8. Check: 7 + 8 = 15 ✓."},
+{t:"Add & subtract",type:"num",q:"Leo scores 14 points in the first half of a basketball game and 9 points in the second half. How many points does he score in all?",a:23,e:"Add 14 + 9. 14 + 10 = 24, but 9 is one less than 10, so take 1 away: 24 − 1 = 23 points."},
+{t:"Add & subtract",type:"num",q:"A box has 30 toy cars. Sam takes 12 cars out. How many toy cars are left in the box?",a:18,e:"Take away 12 from 30. 30 − 10 = 20, then 20 − 2 = 18 cars left."},
+/* ---- 2D SHAPES ---- */
+{t:"2D shapes",type:"mc",q:"What is the name of this shape?",v:{k:"shape",s:"triangle"},o:["Square","Circle","Triangle","Rectangle"],a:"Triangle",e:"A triangle has 3 straight sides and 3 corners. 'Tri' means three."},
+{t:"2D shapes",type:"mc",q:"What is the name of this shape?",v:{k:"shape",s:"rectangle"},o:["Square","Rectangle","Triangle","Circle"],a:"Rectangle",e:"A rectangle has 4 sides and 4 corners. Two sides are long and two sides are short. (A square has 4 sides that are all the same length.)"},
+{t:"2D shapes",type:"num",q:"How many sides does a square have?",v:{k:"shape",s:"square"},a:4,e:"A square has 4 straight sides, and all 4 sides are the same length."},
+{t:"2D shapes",type:"yn",q:"Does a circle have any straight sides?",v:{k:"shape",s:"circle"},a:"No",e:"A circle has one curved edge that goes all the way around. It has no straight sides and no corners."},
+{t:"2D shapes",type:"mc",q:"How many sides does this shape have?",v:{k:"shape",s:"hexagon"},o:["5","6","7","8"],a:"6",e:"This shape is a hexagon. 'Hex' means six, so a hexagon has 6 sides and 6 corners. Count them one by one to check."},
+/* ---- 3D SHAPES ---- */
+{t:"3D shapes",type:"mc",q:"A basketball is the shape of a …",v:{k:"emoji",s:"🏀"},o:["Cube","Cone","Cylinder","Sphere"],a:"Sphere",e:"A sphere is perfectly round like a ball. It has one curved surface and no flat faces, so it rolls in every direction."},
+{t:"3D shapes",type:"mc",q:"A dice is the shape of a …",v:{k:"emoji",s:"🎲"},o:["Sphere","Cube","Cone","Cylinder"],a:"Cube",e:"A cube has 6 square faces, 12 edges and 8 corners. All its faces are the same size."},
+{t:"3D shapes",type:"mc",q:"A can of drink is the shape of a …",v:{k:"emoji",s:"🥫"},o:["Cylinder","Sphere","Cube","Cone"],a:"Cylinder",e:"A cylinder has 2 flat circle faces (top and bottom) and 1 curved surface. A can has exactly that."},
+{t:"3D shapes",type:"yn",q:"Does a cube have 6 flat faces?",v:{k:"emoji",s:"🎲"},a:"Yes",e:"Look at a dice: top, bottom, front, back, left and right. That is 6 flat square faces."},
+/* ---- LENGTH ---- */
+{t:"Length",type:"num",q:"How long is the toy car? Answer in centimetres (cm).",v:{k:"ruler",n:7},a:7,e:"Line up the start of the car with 0 on the ruler. The end of the car is at the 7 mark. So the car is 7 cm long."},
+{t:"Length",type:"num",q:"How long is the toy car? Answer in centimetres (cm).",v:{k:"ruler",n:12},a:12,e:"The car starts at 0 and ends at the 12 mark. So it is 12 cm long."},
+{t:"Length",type:"num",q:"The toy car is as long as how many blocks?",v:{k:"blocklen",n:6},a:6,e:"Count the blocks under the car one by one: 1, 2, 3, 4, 5, 6. The car is 6 blocks long."},
+{t:"Length",type:"mc",q:"Which unit is best for measuring the length of a basketball court?",o:["centimetres (cm)","metres (m)","grams (g)","litres (l)"],a:"metres (m)",e:"A basketball court is very long, so we use big units: metres. Centimetres are for small things like a pencil. Grams measure weight, and litres measure liquid."},
+{t:"Length",type:"yn",q:"Is 100 cm the same length as 1 m?",a:"Yes",e:"1 metre is made of 100 centimetres. Two ways of saying the same length."},
+{t:"Length",type:"mc",q:"Which toy car is longer?",v:{k:"compare",a:5,b:9},o:["Car A","Car B","They are the same"],a:"Car B",e:"Line them up at the left. Car B reaches further to the right, so Car B is longer. Car A is shorter."},
+/* ---- TIME ---- */
+{t:"Telling time",type:"mc",q:"What time does the clock show?",v:{k:"clock",h:3,m:0},o:["3 o'clock","12 o'clock","6 o'clock","half past 3"],a:"3 o'clock",e:"When the long minute hand points straight up to 12, it is 'o'clock'. The short hour hand points to 3, so it is 3 o'clock."},
+{t:"Telling time",type:"mc",q:"What time does the clock show?",v:{k:"clock",h:7,m:30},o:["7 o'clock","half past 7","half past 6","quarter past 7"],a:"half past 7",e:"The minute hand points down to 6. That is 30 minutes, or 'half past'. The hour hand is just after 7, so it is half past 7."},
+{t:"Telling time",type:"mc",q:"What time does the clock show?",v:{k:"clock",h:4,m:15},o:["quarter to 4","4 o'clock","quarter past 3","quarter past 4"],a:"quarter past 4",e:"The minute hand points to 3. That is 15 minutes, a quarter of an hour. The hour hand is just after 4, so it is quarter past 4."},
+{t:"Telling time",type:"mc",q:"What time does the clock show?",v:{k:"clock",h:8,m:45},o:["quarter past 8","quarter to 8","quarter to 9","8 o'clock"],a:"quarter to 9",e:"The minute hand points to 9. That is 45 minutes. There are 15 minutes left until 9 o'clock, so it is quarter to 9."},
+{t:"Telling time",type:"mc",q:"The digital clock shows 6:30. How do we say this time?",v:{k:"digital",s:"6:30"},o:["6 o'clock","half past 5","half past 6","quarter past 6"],a:"half past 6",e:"The number after the colon tells the minutes. :30 means 30 minutes, which is half an hour. So 6:30 is half past 6."},
+{t:"Telling time",type:"yn",q:"Is this clock showing 2 o'clock?",v:{k:"clock",h:2,m:30},a:"No",e:"The minute hand points to 6, not 12. So it is half past 2 (2:30), not 2 o'clock."},
+{t:"Telling time",type:"num",q:"How many minutes are in 1 hour?",a:60,e:"There are 60 minutes in 1 hour. The minute hand goes all the way around the clock once in an hour."}
+];
+
+/* ================= PICTURES ================= */
+function carSVG(x,y,L,color){
+  return `<g><rect x="${x+L*.22}" y="${y-14}" width="${L*.5}" height="20" rx="8" style="fill:${color};opacity:.8"/>
+  <rect x="${x}" y="${y}" width="${L}" height="24" rx="8" style="fill:${color};stroke:#1A1D33;stroke-width:2"/>
+  <rect x="${x+L*.3}" y="${y-9}" width="${L*.34}" height="10" rx="3" style="fill:#CFE8FF"/>
+  <circle cx="${x+L*.22}" cy="${y+26}" r="7" style="fill:#14161C;stroke:#fff;stroke-width:2"/>
+  <circle cx="${x+L*.78}" cy="${y+26}" r="7" style="fill:#14161C;stroke:#fff;stroke-width:2"/></g>`;
+}
+function rulerSVG(n){
+  const u=21,x0=20;
+  let s=`<svg class="vsvg" viewBox="0 0 350 120" role="img" aria-label="A toy car above a centimetre ruler">`;
+  s+=carSVG(x0,28,n*u,"#FF7A1A");
+  s+=`<line x1="${x0}" y1="52" x2="${x0}" y2="68" style="stroke:var(--ink);stroke-width:2;stroke-dasharray:3 3"/>`;
+  s+=`<line x1="${x0+n*u}" y1="52" x2="${x0+n*u}" y2="68" style="stroke:var(--ink);stroke-width:2;stroke-dasharray:3 3"/>`;
+  s+=`<rect x="14" y="68" width="${15*u+12}" height="44" rx="6" style="fill:#FFD21F;stroke:#1A1D33;stroke-width:3"/>`;
+  for(let i=0;i<=15;i++){
+    const x=x0+i*u;
+    s+=`<line x1="${x}" y1="68" x2="${x}" y2="${i%5===0?92:84}" style="stroke:#1A1D33;stroke-width:2"/>`;
+    s+=`<text x="${x}" y="107" text-anchor="middle" style="font:400 12px Bungee,Impact,sans-serif;fill:#1A1D33">${i}</text>`;
+  }
+  return s+`</svg>`;
+}
+function blockLenSVG(n){
+  const u=30,x0=20;
+  let s=`<svg class="vsvg" viewBox="0 0 360 110" role="img" aria-label="A toy car above a row of blocks">`;
+  s+=carSVG(x0,22,n*u,"#3B82F6");
+  for(let i=0;i<n;i++) s+=`<rect x="${x0+i*u}" y="64" width="${u}" height="${u}" style="fill:#FFD21F;stroke:#1A1D33;stroke-width:3"/>`;
+  return s+`</svg>`;
+}
+function compareSVG(a,b){
+  const u=24;
+  let s=`<svg class="vsvg" viewBox="0 0 330 140" role="img" aria-label="Two toy cars of different lengths">`;
+  s+=`<text x="6" y="38" style="font:400 24px Bungee,Impact,sans-serif;fill:var(--ink)">A</text>`+carSVG(40,22,a*u,"#FF7A1A");
+  s+=`<text x="6" y="108" style="font:400 24px Bungee,Impact,sans-serif;fill:var(--ink)">B</text>`+carSVG(40,92,b*u,"#3B82F6");
+  return s+`</svg>`;
+}
+function clockSVG(h,m){
+  const cx=100,cy=100;
+  const hourA=((h%12)+m/60)*30, minA=m*6;
+  const pt=(deg,r)=>[cx+r*Math.sin(deg*Math.PI/180), cy-r*Math.cos(deg*Math.PI/180)];
+  let s=`<svg class="vsvg" style="max-width:240px" viewBox="0 0 200 200" role="img" aria-label="An analogue clock">`;
+  s+=`<circle cx="100" cy="100" r="94" style="fill:var(--clock);stroke:#FF7A1A;stroke-width:9"/>`;
+  s+=`<circle cx="100" cy="100" r="88" style="fill:none;stroke:var(--ink);stroke-width:2"/>`;
+  for(let i=0;i<60;i++){ const a=pt(i*6,i%5?84:80), b=pt(i*6,88); s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" style="stroke:var(--ink);stroke-width:${i%5?1:2.5}"/>`; }
+  for(let i=1;i<=12;i++){ const p=pt(i*30,66); s+=`<text x="${p[0]}" y="${p[1]+6}" text-anchor="middle" style="font:400 17px Bungee,Impact,sans-serif;fill:var(--ink)">${i}</text>`; }
+  const hp=pt(hourA,44), mp=pt(minA,70);
+  s+=`<line x1="100" y1="100" x2="${hp[0]}" y2="${hp[1]}" style="stroke:var(--ink);stroke-width:9;stroke-linecap:round"/>`;
+  s+=`<line x1="100" y1="100" x2="${mp[0]}" y2="${mp[1]}" style="stroke:#FF7A1A;stroke-width:5;stroke-linecap:round"/>`;
+  s+=`<circle cx="100" cy="100" r="7" style="fill:#FFD21F;stroke:var(--ink);stroke-width:3"/>`;
+  return s+`</svg>`;
+}
+function shapeSVG(name){
+  const st=`style="fill:#FFD21F;stroke:#1A1D33;stroke-width:5;stroke-linejoin:round"`;
+  let g="";
+  if(name==="triangle") g=`<polygon points="100,16 24,124 176,124" ${st}/>`;
+  if(name==="rectangle") g=`<rect x="22" y="34" width="156" height="78" ${st}/>`;
+  if(name==="square") g=`<rect x="48" y="16" width="104" height="108" ${st}/>`;
+  if(name==="circle") g=`<circle cx="100" cy="70" r="56" ${st}/>`;
+  if(name==="hexagon"){ let p=[]; for(let i=0;i<6;i++){const a=i*60*Math.PI/180; p.push((100+60*Math.cos(a)).toFixed(1)+","+(70+60*Math.sin(a)).toFixed(1));} g=`<polygon points="${p.join(" ")}" ${st}/>`; }
+  return `<svg class="vsvg" style="max-width:240px" viewBox="0 0 200 140" role="img" aria-label="A ${name}">${g}</svg>`;
+}
+function blocksHTML(t,o){
+  const rods='<div class="rod">'+"<i></i>".repeat(10)+'</div>';
+  return `<div class="blocks" role="img" aria-label="${t} tens rods and ${o} ones cubes">
+    <div class="grp"><div class="row">${rods.repeat(t)}</div><small>tens</small></div>
+    <div class="grp"><div class="row">${'<div class="one"></div>'.repeat(o)}</div><small>ones</small></div></div>`;
+}
+function vis(v){
+  if(!v) return "";
+  switch(v.k){
+    case "blocks": return blocksHTML(v.tens,v.ones);
+    case "shape": return shapeSVG(v.s);
+    case "emoji": return `<div class="bigemoji" aria-hidden="true">${v.s}</div>`;
+    case "ruler": return rulerSVG(v.n);
+    case "blocklen": return blockLenSVG(v.n);
+    case "compare": return compareSVG(v.a,v.b);
+    case "clock": return clockSVG(v.h,v.m);
+    case "digital": return `<div class="lcd" role="img" aria-label="Digital clock ${v.s}">${v.s}</div>`;
+  }
+  return "";
+}
+
+/* ================= SOUND (Web Audio only) ================= */
+let actx=null, muted=false;
+function ac(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(actx&&actx.state==="suspended") actx.resume(); return actx; }
+function tone(f,st,d,type="triangle",v=.18,f2){
+  const a=ac(); if(!a||muted) return;
+  const o=a.createOscillator(), g=a.createGain(), t=a.currentTime+st;
+  o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+d);
+  g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(v,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+d+.05);
+}
+function noise(d,f1,f2,v){
+  const a=ac(); if(!a||muted) return;
+  const len=Math.floor(a.sampleRate*d), buf=a.createBuffer(1,len,a.sampleRate), ch=buf.getChannelData(0);
+  for(let i=0;i<len;i++) ch[i]=Math.random()*2-1;
+  const s=a.createBufferSource(); s.buffer=buf;
+  const f=a.createBiquadFilter(); f.type="bandpass"; f.Q.value=1.5;
+  f.frequency.setValueAtTime(f1,a.currentTime); f.frequency.exponentialRampToValueAtTime(f2,a.currentTime+d);
+  const g=a.createGain(); g.gain.setValueAtTime(v,a.currentTime); g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);
+  s.connect(f); f.connect(g); g.connect(a.destination); s.start();
+}
+const sfx={
+  click(){tone(560,0,.07,"triangle",.12)},
+  beep(f=440,d=.22){tone(f,0,d,"square",.12)},
+  engine(){tone(70,0,1,"sawtooth",.12,360); tone(140,0,1,"square",.05,700)},
+  dribble(){tone(120,0,.1,"sine",.25,70)},
+  swish(){noise(.4,1500,5200,.5); tone(784,.05,.18,"triangle",.16); tone(1047,.15,.3,"triangle",.16)},
+  clank(){tone(900,0,.12,"square",.12,500); tone(1300,0,.1,"square",.07,700); tone(110,0,.25,"sine",.3,60)},
+  horn(){tone(392,0,.45,"square",.08); tone(494,0,.45,"square",.08); tone(392,.5,.4,"square",.08); tone(494,.5,.4,"square",.08)},
+  win(){[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,i*.13,.28,"square",.1)); noise(1.4,500,2500,.2)},
+  ok(){[392,523,659].forEach((f,i)=>tone(f,i*.1,.2,"triangle",.16))}
+};
+function speak(text){
+  if(muted||!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=.85; u.pitch=1.1;
+  speechSynthesis.speak(u);
+}
+
+/* ================= CONFETTI ================= */
+const cv=document.getElementById("fx"), cx=cv.getContext("2d"); let parts=[], raf=null;
+function fit(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio}
+addEventListener("resize",fit); fit();
+function burst(n=60,x=.5,y=.4){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cols=["#FF7A1A","#FFD21F","#FFFFFF","#3B82F6","#2BD67B"], em=["🏀","🏁","🏎️","⭐"];
+  const d=devicePixelRatio;
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2, sp=(4+Math.random()*9)*d, isE=i%6===0;
+    parts.push({x:cv.width*x,y:cv.height*y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-7*d,s:(7+Math.random()*7)*d,
+      c:cols[i%cols.length],e:isE?em[i%em.length]:null,r:Math.random()*6,vr:(Math.random()-.5)*.4,life:90+Math.random()*40});
+  }
+  if(!raf) raf=requestAnimationFrame(tick);
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.life>0);
+  for(const p of parts){
+    p.x+=p.vx;p.y+=p.vy;p.vy+=.35*devicePixelRatio;p.vx*=.99;p.r+=p.vr;p.life--;
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=Math.min(1,p.life/30);
+    if(p.e){cx.font=(p.s*3)+"px sans-serif";cx.textAlign="center";cx.fillText(p.e,0,0);}
+    else{cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/3,p.s,p.s*.6);}
+    cx.restore();
+  }
+  raf=parts.length?requestAnimationFrame(tick):null;
+  if(!raf) cx.clearRect(0,0,cv.width,cv.height);
+}
+
+/* ================= GAME ================= */
+const $=id=>document.getElementById(id);
+let deck=[],idx=0,score=0,streak=0,best=0,answered=false,log=[],typed="",launching=false;
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const good=["SWISH!","Nothing but net!","Slam dunk!","Pole position!","Fast lap!","Champion move!"];
+const bad=["Rim out!","Missed shot!","Pit stop time!","So close!"];
+
+function led(){ $("scoreLed").firstChild.nodeValue=score; $("streakLed").firstChild.nodeValue=streak; }
+
+function launch(){
+  if(launching) return; launching=true;
+  ac(); sfx.click();
+  deck=$("mix").checked?shuffle(Q):Q.slice();
+  idx=0;score=0;streak=0;best=0;log=[]; led();
+  $("start").classList.add("hidden"); $("result").classList.add("hidden");
+  const L=$("lights"), lamps=[...L.querySelectorAll(".lamp")]; L.classList.remove("hidden");
+  lamps.forEach(l=>l.className="lamp"); $("goTxt").textContent="READY…";
+  let n=0;
+  const step=()=>{
+    if(n<3){ lamps[n].classList.add("red"); sfx.beep(440); n++; setTimeout(step,620); }
+    else{
+      lamps.forEach(l=>{l.classList.remove("red");l.classList.add("green")});
+      $("goTxt").textContent="GO!"; sfx.beep(880,.4); sfx.engine();
+      setTimeout(()=>{L.classList.add("hidden"); launching=false; $("quiz").classList.remove("hidden"); show();},950);
+    }
+  };
+  setTimeout(step,200);
+}
+
+function setCar(p){ $("car").style.left=`calc((100% - 52px) * ${p})`; }
+
+function show(){
+  answered=false; typed="";
+  const q=deck[idx];
+  setCar(idx/deck.length);
+  $("counter").textContent=`Question ${idx+1} of ${deck.length}`;
+  $("topic").textContent=q.t;
+  $("qtext").textContent=q.q;
+  $("vis").innerHTML=vis(q.v);
+  const m=$("mascot"); m.textContent="🏀"; m.className="mascot";
+  $("fb").classList.add("hidden"); $("fb").innerHTML="";
+  const box=$("answers"); box.innerHTML=""; box.className="answers";
+  const w=$("qwrap"); w.style.animation="none"; void w.offsetWidth; w.style.animation="";
+
+  if(q.type==="mc"){
+    shuffle(q.o).forEach((t,i)=>{
+      const b=document.createElement("button"); b.className="opt";
+      b.innerHTML=`<span class="k"><span>${"ABCD"[i]}</span></span><span class="txt"></span>`;
+      b.querySelector(".txt").textContent=t; b.dataset.v=t;
+      b.onclick=()=>check(t,b); box.appendChild(b);
+    });
+  } else if(q.type==="yn"){
+    box.classList.add("yn");
+    ["Yes","No"].forEach(t=>{
+      const b=document.createElement("button"); b.className="opt"; b.dataset.v=t;
+      b.textContent=(t==="Yes"?"✅ ":"❌ ")+t.toUpperCase(); b.onclick=()=>check(t,b); box.appendChild(b);
+    });
+  } else {
+    box.innerHTML=`<div class="pad"><div class="screen" id="screen" aria-live="polite">&nbsp;</div><div class="keys" id="keys"></div></div>`;
+    const keys=$("keys");
+    [1,2,3,4,5,6,7,8,9,"⌫",0,"GO"].forEach(k=>{
+      const b=document.createElement("button"); b.className="key"+(k==="GO"?" go":""); b.textContent=k;
+      b.setAttribute("aria-label",k==="⌫"?"Delete":k==="GO"?"Check my answer":String(k));
+      b.onclick=()=>press(k); keys.appendChild(b);
+    });
+  }
+}
+
+function press(k){
+  if(answered) return;
+  if(k==="⌫"){ typed=typed.slice(0,-1); sfx.click(); }
+  else if(k==="GO"){ if(typed!=="") check(typed,$("screen")); return; }
+  else if(typed.length<3){ typed+=k; sfx.click(); }
+  $("screen").innerHTML=typed===""?"&nbsp;":typed;
+}
+document.addEventListener("keydown",e=>{
+  const q=deck[idx];
+  if($("quiz").classList.contains("hidden")||!q||q.type!=="num"||answered||e.repeat) return;
+  if(/^[0-9]$/.test(e.key)) press(e.key);
+  else if(e.key==="Backspace") press("⌫");
+  else if(e.key==="Enter"){ e.preventDefault(); press("GO"); }
+});
+
+function check(val,el){
+  if(answered) return; answered=true;
+  const q=deck[idx];
+  const ok = q.type==="num" ? parseInt(val,10)===q.a : val===q.a;
+
+  if(q.type==="num"){
+    el.classList.add(ok?"right":"wrong");
+    document.querySelectorAll("#keys .key").forEach(b=>b.disabled=true);
+  } else {
+    document.querySelectorAll("#answers .opt").forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.v===q.a) b.classList.add("right");
+      else if(b===el) b.classList.add("wrong");
+    });
+  }
+
+  const m=$("mascot"), car=$("car");
+  car.classList.remove("boost","slip"); void car.offsetWidth;
+  if(ok){
+    score+=10+Math.min(streak,5)*2; streak++; best=Math.max(best,streak);
+    m.textContent="😎"; m.classList.add("hop"); car.classList.add("boost");
+  } else {
+    streak=0; m.textContent="😵"; m.classList.add("squish"); car.classList.add("slip");
+  }
+  led();
+  log.push({q,ok});
+
+  /* sounds timed to the ball animation */
+  sfx.dribble();
+  if(ok){
+    setTimeout(()=>{ sfx.swish(); burst(40,.5,.55); },720);
+    if(streak%5===0) setTimeout(()=>{ sfx.horn(); burst(120); },1200);
+  } else setTimeout(sfx.clank,680);
+
+  const fb=$("fb"); fb.className="fb "+(ok?"good":"bad");
+  fb.innerHTML=`
+   <div class="shot ${ok?"":"miss"}" aria-hidden="true">
+     <svg class="hb" viewBox="0 0 100 100"><rect x="80" y="2" width="12" height="58" rx="3" style="fill:#fff;stroke:#1A1D33;stroke-width:3"/><rect x="82" y="18" width="8" height="18" style="fill:none;stroke:#E8590C;stroke-width:2"/><line x1="76" y1="52" x2="80" y2="52" style="stroke:#E8590C;stroke-width:5"/><ellipse cx="48" cy="52" rx="28" ry="6" style="fill:none;stroke:#E8590C;stroke-width:5"/></svg>
+     <span class="ball">🏀</span>
+     <svg class="net" viewBox="0 0 100 100"><path d="M21 55 L38 92 M32 57 L44 92 M48 58 L50 92 M64 57 L56 92 M75 55 L62 92 M24 66 H74 M30 78 H68" style="fill:none;stroke:#fff;stroke-width:2;opacity:.95"/></svg>
+     <div class="callout">${ok?rnd(good):rnd(bad)}</div>
+   </div>
+   <div class="fbtxt">
+     <h3>${ok?"✅ Correct! +"+(10+Math.min(streak-1,5)*2):"❌ Not this time"}</h3>
+     <p class="ans">${ok?"Answer":"The answer is"}: <span id="ansTxt"></span></p>
+     <p class="why"><b>Coach's tip</b><span id="whyTxt"></span></p>
+     <button class="btn" id="nextBtn">${idx+1===deck.length?"Cross the finish line!":"Next lap"}</button>
+   </div>`;
+  $("ansTxt").textContent=q.a; $("whyTxt").textContent=q.e;
+  $("nextBtn").onclick=next;
+  setTimeout(()=>{ fb.scrollIntoView({behavior:"smooth",block:"nearest"}); $("nextBtn").focus({preventScroll:true}); },80);
+}
+
+function next(){ sfx.click(); if(window.speechSynthesis) speechSynthesis.cancel(); idx++; if(idx>=deck.length) finish(); else show(); }
+
+function finish(){
+  setCar(1);
+  $("quiz").classList.add("hidden"); $("result").classList.remove("hidden");
+  const correct=log.filter(l=>l.ok).length, pct=Math.round(correct/deck.length*100);
+  const st=pct>=90?3:pct>=70?2:pct>=40?1:0;
+  $("stars").innerHTML=[0,1,2].map(i=>`<span style="animation-delay:${i*.25}s;${i<st?"":"filter:grayscale(1);opacity:.35"}">⭐</span>`).join("");
+  $("rank").textContent=pct>=90?"MVP CHAMPION!":pct>=70?"PODIUM FINISH!":pct>=40?"GOOD LAP, ROOKIE!":"KEEP PRACTISING!";
+  $("rScore").textContent=`${correct}/${deck.length}`;
+  $("rMsg").textContent=`${pct}% correct · ${score} points · best streak ${best} 🔥`;
+  const by={}; log.forEach(l=>{const k=l.q.t;(by[k]=by[k]||{c:0,n:0}).n++;if(l.ok)by[k].c++;});
+  $("bars").innerHTML=Object.entries(by).map(([k,v])=>`<div class="bar"><span>${k}</span><span class="t"><i data-w="${Math.round(v.c/v.n*100)}"></i></span><span>${v.c}/${v.n}</span></div>`).join("");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".bar i").forEach(i=>i.style.width=i.dataset.w+"%")));
+  const wrong=log.filter(l=>!l.ok);
+  $("review").classList.toggle("hidden",wrong.length===0);
+  $("revList").innerHTML=wrong.map(()=>`<div class="rev"><b></b><br><span></span></div>`).join("");
+  document.querySelectorAll("#revList .rev").forEach((d,i)=>{
+    d.querySelector("b").textContent=wrong[i].q.q;
+    d.querySelector("span").textContent=`Answer: ${wrong[i].q.a}. ${wrong[i].q.e}`;
+  });
+  sfx.win(); burst(160,.5,.3); setTimeout(()=>burst(110,.2,.4),400); setTimeout(()=>burst(110,.8,.4),700);
+  scrollTo({top:0,behavior:"smooth"});
+}
+
+$("startBtn").onclick=launch;
+$("againBtn").onclick=()=>{ $("result").classList.add("hidden"); $("start").classList.remove("hidden"); scrollTo({top:0}); };
+$("listen").onclick=()=>{ ac(); const q=deck[idx]; if(q) speak(q.q.replace("☐","blank")); };
+$("muteBtn").onclick=()=>{ muted=!muted; $("muteBtn").textContent=muted?"🔇":"🔊"; if(muted&&window.speechSynthesis) speechSynthesis.cancel(); else {ac();sfx.click();} };
+$("themeBtn").onclick=()=>{
+  const r=document.documentElement, dark=matchMedia("(prefers-color-scheme: dark)").matches;
+  const cur=r.getAttribute("data-theme")||(dark?"dark":"light");
+  r.setAttribute("data-theme",cur==="dark"?"light":"dark");
+};
+</script>
+</body>
+</html>
